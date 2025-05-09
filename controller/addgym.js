@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt")
 const gymmodel = require("../model/gym")
+const {transporter} = require("../util/nodemailer")
 const {generateToken} = require("../util/jwtUtil")
 const creategym = async(req,res) =>{
         const {gymname,username,email,password}=req.body
@@ -45,7 +46,68 @@ const authgym = async(req,res)=>{
                 return res.status(400).json({message:"Password is not matched"})
         }
 }
-const authemail = (req,res) =>{
-
+const authemail = async(req,res) =>{
+        const {email} = req.body
+        if(!email)
+        {
+                return res.status(400).json({message:"please input your email"})
+        }
+        const existemail = await gymmodel.findOne({email:email})
+        if(!existemail){
+                return res.status(400).json({message:"you are not registered please register"})
+        }
+        const otp = String(Math.floor(100000 + Math.random() * 900000))
+        existemail.otp = otp
+        existemail.otpExpiretime= Date.now()+10*60*1000
+        await existemail.save()
+        const mainOptions = {
+            from:process.env.SENDER_EMAIL,
+            to:existemail.email,
+            subject:"Reset password OTP",
+            text:`Your otp is ${existemail.otp},use this otp to reset your password`
+        }
+        await transporter.sendMail(mainOptions).then(()=>{
+                return res.status(200).json({message:"The otp is sent to your email"})
+        }).catch((error)=>{
+                return res.status(400).json({message:error,email:existemail.email})
+        })
 }
-module.exports = {creategym,authgym}
+const authotp = async(req,res)=>{
+        const {otp,email} = req.body
+        if(!otp||!email)
+        {
+                return res.status(400).json({message:"please input your otp"})
+        }
+        const existEmail = await gymmodel.findOne({email})
+        if(existEmail)
+        {
+                if(Date.now()>existEmail.otpExpiretime)
+                {
+                        return res.status(400).json({message:"otp is expired"})
+                }
+                if(otp==existEmail.otp)
+                {
+                        existEmail.otp = ""
+                        existEmail.otpExpiretime = 0
+                        await existEmail.save()
+                        return res.status(200).json({message:"Otp is verified successully",email:existEmail.email})
+                }else
+                {
+                        return res.status(400).json({message:"otp is invalid"})
+                }
+        }
+}
+const resetPassword = async(req,res)=>{
+        const {email,password}=req.body
+        if(!email||!password){
+                return res.status(400).json({message:"please input your password"})
+        }
+        const existemail=await gymmodel.findOne({email})
+        if(existemail){
+                const hashedpassword = await bcrypt.hash(password,10);
+                existemail.password = hashedpassword
+                await existemail.save()
+                return res.status(200).json({message:"Password reset successfully"})
+        }
+}
+module.exports = {creategym,authgym,authemail,authotp,resetPassword}

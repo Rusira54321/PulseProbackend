@@ -17,6 +17,14 @@ const gymSchema = mongoose.Schema({
     password:{
         type:String,
         required:true
+    },
+    otp:{
+        type:String,
+        default:''
+    },
+    otpExpiretime:{
+        type:Number,
+        default:0
     }
 })
 module.exports = mongoose.model("Gym",gymSchema)
