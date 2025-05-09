@@ -1,0 +1,21 @@
+const express = require("express")
+const mongoose = require("mongoose")
+const cors = require("cors")
+const app = express()
+require("dotenv").config()
+app.use(express.json())
+app.use(cors())
+const authrouter = require("./router/addgym")
+const port = process.env.PORT
+const createConnection = async()=>{
+await mongoose.connect(process.env.MONGODB_URL).then(()=>{
+        console.log("MongoDb connection is successfully")
+        app.listen(port,()=>{
+            console.log("server is running on "+port)
+        })
+}).catch((error)=>{
+        console.log(error)
+})
+}
+createConnection()
+app.use("/auth",authrouter)
