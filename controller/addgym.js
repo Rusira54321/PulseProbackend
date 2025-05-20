@@ -6,9 +6,17 @@ const creategym = async(req,res) =>{
         const {gymname,username,email,password}=req.body
         if(!gymname || !username || !email || !password)
         {
-                return res.status(404).json({message:"you are not fullfill form correctly"}) 
+                return res.status(404).json({message:"missing fields"}) 
         }
         else{
+                const existemail = await gymmodel.findOne({email})
+                const existusename = await gymmodel.findOne({username})
+                if(existusename){
+                        return res.status(400).json({message:"please try another user name"})
+                }
+                if(existemail){
+                        return res.status(400).json({message:"your email is existing please use another email"})
+                }
                 const hashedpassword = await bcrypt.hash(password,10);
                 const newgym = new gymmodel({
                         gymname,
