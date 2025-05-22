@@ -1,0 +1,37 @@
+const mongoose = require("mongoose")
+const memberSchema  = mongoose.Schema({
+    name:{
+        type:String,
+        required:true
+    },
+    username:{
+        type:String,
+        required:true,
+        unique:true
+    },
+    password:{
+        type:String,
+        required:true
+    },
+    heightincm:{
+        type:Number,
+        required:true
+    },
+    weightinkg:{
+        type:String,
+        required:true
+    },
+    gym:{
+        type:String,
+        default:""
+    },
+    trainer:{
+        type:String,
+        default:""
+    },
+    profileimage:{
+        type:String,
+        required:true
+    }
+})
+module.exports = mongoose.model("member",memberSchema)

@@ -46,7 +46,6 @@ const authgym = async(req,res)=>{
         if(matchpassword)
         {
                 const token = generateToken(existuser)
-
                 return res.status(200).json({message:"you are successfully logging",token:token})
         }
         else
