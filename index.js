@@ -2,6 +2,8 @@ const express = require("express")
 const mongoose = require("mongoose")
 const cors = require("cors")
 const app = express()
+app.use(express.static("./public"))
+const multerroute = require("./router/multer")
 require("dotenv").config()
 app.use(express.json())
 app.use(cors())
@@ -19,3 +21,4 @@ await mongoose.connect(process.env.MONGODB_URL).then(()=>{
 }
 createConnection()
 app.use("/auth",authrouter)
+app.use("/multer",multerroute)
