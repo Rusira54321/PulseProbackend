@@ -1,5 +1,6 @@
 const express = require("express")
 const router = express.Router()
-const {authtrainer} = require("../controller/trainer")
+const {authtrainer,gettrainers} = require("../controller/trainer")
 router.post("/login",authtrainer)
+router.get("/gettrainer",gettrainers)
 module.exports = router

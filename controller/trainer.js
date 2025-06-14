@@ -59,4 +59,14 @@ const authtrainer = async(req,res)=>{
         }
     }
 }
-module.exports = {addtrainer,authtrainer}
+const gettrainers = async(req,res) =>{
+    const trainers = await trainer.find()
+    if(!trainers)
+    {
+        return res.status(400).json({message:"Trainers not found"})
+    }else{
+        return res.status(200).json({trainers:trainers})
+    }
+}
+
+module.exports = {addtrainer,authtrainer,gettrainers}
