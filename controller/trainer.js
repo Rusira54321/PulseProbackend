@@ -99,4 +99,10 @@ const deleteTrainer = async(req,res) =>{
         return res.status(200).json({message:"trainer is deleted"})
     }
 }
-module.exports = {addtrainer,authtrainer,gettrainers,deleteTrainer}
+const gettrainername = async(req,res) =>{
+    const {username} = req.body
+    const trainerdetails = await trainer.findOne({username})
+    const trainername = trainerdetails.name
+    res.status(200).json({name:trainername})
+}
+module.exports = {addtrainer,authtrainer,gettrainers,deleteTrainer,gettrainername}

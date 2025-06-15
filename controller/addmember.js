@@ -3,8 +3,8 @@ const trainerss = require("../model/Trainer")
 const member = require("../model/member")
 const addmember = async(req,res) =>{
     const profileimage = req.file.filename
-    const {name,username,password,height,weight,key,trainer} = req.body
-    if (!name || !username || !password || !height || !weight || !trainer || key=="null" || !profileimage)
+    const {name,username,password,height,weight,key,trainer,trainername} = req.body
+    if (!name || !username || !password || !height || !weight || !trainer || key=="null" || !profileimage || !trainername)
     {
          return res.status(400).json({message:"missing fields"})
     }
@@ -16,7 +16,7 @@ const addmember = async(req,res) =>{
     const hashedpassword = await bcrypt.hash(password,10)
     
     const newmember = new member({
-        name,username,password:hashedpassword,heightincm:height,weightinkg:weight,gym:key,trainer,profileimage
+        name,username,password:hashedpassword,heightincm:height,weightinkg:weight,gym:key,trainer:trainername,profileimage,trainerusername:trainer
     })
     await newmember.save().then(()=>{
         const updatetrainer = async() =>{
@@ -50,6 +50,11 @@ const getmemberdetails = async(req,res) =>{
 }
 const deleteMember = async(req,res) =>{
     const {id} = req.body
+    const members = await member.findOne({_id:id})
+    const traineruser = members.trainerusername
+    const trainer = await trainerss.findOne({username:traineruser})
+    trainer.noOfstudents= trainer.noOfstudents-1
+    await trainer.save()
     const deletemember = await member.findByIdAndDelete(id)
     if(!deletemember)
     {

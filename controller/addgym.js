@@ -109,12 +109,33 @@ const resetPassword = async(req,res)=>{
         if(!email||!password){
                 return res.status(400).json({message:"please input your password"})
         }
+        if(!email)
+        {
+                return res.status(400).json({message:"no email"})
+        }
         const existemail=await gymmodel.findOne({email})
         if(existemail){
                 const hashedpassword = await bcrypt.hash(password,10);
                 existemail.password = hashedpassword
                 await existemail.save()
-                return res.status(200).json({message:"Password reset successfully"})
+                return res.status(200).json({message:`Password reset successfully${email}`})
         }
 }
-module.exports = {creategym,authgym,authemail,authotp,resetPassword}
+const getemail = async(req,res) =>{
+        const {username} = req.body
+        if(!username)
+        {
+                return res.status(400).json({message:"Enter your user name"})
+        }else{
+                const existgym = await gymmodel.findOne({username})
+                if(!existgym)
+                {
+                        return res.status(400).json({message:"You are not registered please register"})
+                }
+                else{
+                        const email = existgym.email
+                        return res.status(200).json({email:email})
+                }
+        }
+}
+module.exports = {creategym,authgym,authemail,authotp,resetPassword,getemail}

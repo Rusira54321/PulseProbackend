@@ -37,6 +37,9 @@ const memberSchema  = mongoose.Schema({
         type:String,
         default:"none",
         required:true
+    },trainerusername:{
+        type:String,
+        required:true
     }
 })
 module.exports = mongoose.model("member",memberSchema)
