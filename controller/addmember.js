@@ -1,4 +1,5 @@
 const bcrypt = require("bcrypt")
+const trainerss = require("../model/Trainer")
 const member = require("../model/member")
 const addmember = async(req,res) =>{
     const profileimage = req.file.filename
@@ -13,10 +14,17 @@ const addmember = async(req,res) =>{
         return res.status(400).json({message:"The username is already exist"})
     }
     const hashedpassword = await bcrypt.hash(password,10)
+    
     const newmember = new member({
         name,username,password:hashedpassword,heightincm:height,weightinkg:weight,gym:key,trainer,profileimage
     })
     await newmember.save().then(()=>{
+        const updatetrainer = async() =>{
+            const trainers = await trainerss.findOne({username:trainer})
+            trainers.noOfstudents = trainers.noOfstudents+1
+            await trainers.save()
+        }
+            updatetrainer()
             return res.status(201).json({message:"member created successfully"})
     }).catch((error)=>{
             return res.status(400).json({message:error})

@@ -1,5 +1,6 @@
 const bcrypt = require("bcrypt")
 const trainer = require("../model/Trainer")
+const member = require("../model/member")
 const {generateToken} =require("../util/jwtUtil")
 const addtrainer = async(req,res) =>{
         const profileimage = req.file.filename
@@ -60,13 +61,42 @@ const authtrainer = async(req,res)=>{
     }
 }
 const gettrainers = async(req,res) =>{
+    const {key} = req.body
     const trainers = await trainer.find()
-    if(!trainers)
+    var i
+    var newtrainers = []
+    for(i=0;i<trainers.length;i++)
+        {
+            if(trainers[i].key==key)
+            {
+                newtrainers.push(trainers[i])
+            }
+        } 
+    if(!newtrainers)
     {
         return res.status(400).json({message:"Trainers not found"})
     }else{
-        return res.status(200).json({trainers:trainers})
+        return res.status(200).json({trainers:newtrainers})
     }
 }
-
-module.exports = {addtrainer,authtrainer,gettrainers}
+const deleteTrainer = async(req,res) =>{
+    const {id,username} = req.body
+    const members  = await member.find()
+    var i
+    for(i=0;i<members.length;i++)
+    {
+        if(members[i].trainer==username)
+        {
+            members[i].trainer = "No Trainer"
+            await members[i].save()
+        }
+    }
+    const deletetrainer = await trainer.findByIdAndDelete(id)
+    if(!deletetrainer)
+    {
+        return res.status(400).json({message:"Cannot delete the trainer"})
+    }else{
+        return res.status(200).json({message:"trainer is deleted"})
+    }
+}
+module.exports = {addtrainer,authtrainer,gettrainers,deleteTrainer}

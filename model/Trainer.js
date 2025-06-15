@@ -35,6 +35,11 @@ const trainerSchema = mongoose.Schema({
         type:Date,
         required:true
     },
+    noOfstudents:{
+        type:Number,
+        default:0,
+        required:true
+    },
     profileimage:{
         type:String,
         required:true
