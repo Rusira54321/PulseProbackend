@@ -32,6 +32,11 @@ const memberSchema  = mongoose.Schema({
     profileimage:{
         type:String,
         required:true
+    },
+    paymentStatus:{
+        type:String,
+        default:"none",
+        required:true
     }
 })
 module.exports = mongoose.model("member",memberSchema)

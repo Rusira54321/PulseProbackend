@@ -22,4 +22,33 @@ const addmember = async(req,res) =>{
             return res.status(400).json({message:error})
     })
 }
-module.exports = {addmember}
+const getmemberdetails = async(req,res) =>{
+        const {key} = req.body;
+        const members  = await member.find()
+        var i
+        var newmember = []
+        for (i=0;i<members.length;i++)
+        {
+            if(members[i].gym==key)
+            {
+                newmember.push(members[i])
+            }
+        }
+        if(newmember.length==0)
+        {
+            return res.status(400).json({member:"empty members"})
+        }
+        return res.status(200).json({member:newmember})
+}
+const deleteMember = async(req,res) =>{
+    const {id} = req.body
+    const deletemember = await member.findByIdAndDelete(id)
+    if(!deletemember)
+    {
+        return res.status(400).json({message:"Cannot delete the member"})
+    }
+    else{
+        return res.status(200).json({message:"member is deleted"})
+    }
+}
+module.exports = {addmember,getmemberdetails,deleteMember}
