@@ -55,4 +55,26 @@ const getSuppliments = async(req,res) =>{
     
     return res.status(200).json({suppliment:matchsuppliment})
 }
-module.exports = {addSuppliment,getSuppliments}
+const deleteSupplement = async(req,res) =>{
+    const {id} = req.params
+    if (typeof id !== 'string') {
+      return res.status(400).json({ message: 'Invalid ID format' });
+    }
+    const deleted = await suppliment.findByIdAndDelete(id)
+    if(deleted)
+    {
+        return res.status(200).json({message:"Deleted successfully"})
+    }
+    else{
+        return res.status(400).json({message:"Deletion is unsuccessfull"})
+    }
+}
+const getsupplimentbyId = async(req,res) =>{
+    const {id}  =  req.body
+    const supplimentsss = await suppliment.findById(id)
+    if(supplimentsss)
+    {
+        return res.status(200).json({suppliment:supplimentsss})
+    }
+}
+module.exports = {addSuppliment,getSuppliments,deleteSupplement,getsupplimentbyId}
