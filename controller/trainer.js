@@ -13,6 +13,11 @@ const addtrainer = async(req,res) =>{
         {
             return res.status(400).json({message:"incorrect gender"})
         }
+        const existname = await trainer.findOne({name})
+        if(existname)
+        {
+            return res.status(400).json({message:"this name is already exist"})
+        }
         const existusername = await trainer.findOne({username})
         if(existusername)
         {

@@ -53,8 +53,12 @@ const deleteMember = async(req,res) =>{
     const members = await member.findOne({_id:id})
     const traineruser = members.trainerusername
     const trainer = await trainerss.findOne({username:traineruser})
-    trainer.noOfstudents= trainer.noOfstudents-1
-    await trainer.save()
+    if(trainer!=null)
+    {
+        trainer.noOfstudents= trainer.noOfstudents-1
+        await trainer.save()
+    }
+    
     const deletemember = await member.findByIdAndDelete(id)
     if(!deletemember)
     {
@@ -72,4 +76,41 @@ const getmemberbyID = async(req,res) =>{
         return res.status(200).json({member:matchMember})
     }
 }
-module.exports = {addmember,getmemberdetails,deleteMember,getmemberbyID,getmemberbyID}
+const updatemember = async(req,res) =>{
+    const {id,password,heightCM,weightKG,trainer} = req.body
+    if(!id || !password || !heightCM || !weightKG || !trainer)
+    {
+        return res.status(400).json({message:"Missing fields"})
+    }
+    const matchtrainer = await trainerss.findOne({name:trainer})
+    const usernames = matchtrainer.username
+    const hashedpassword = await bcrypt.hash(password,10)
+    const members = await member.findById(id)
+    const mtrainer = members.trainer
+    if(mtrainer!=trainer)
+    {
+        if(matchtrainer!=null)
+        {
+        matchtrainer.noOfstudents =  matchtrainer.noOfstudents + 1
+        await matchtrainer.save()
+        }
+
+        const updatedtrainer = await trainerss.findOne({name:mtrainer})
+        if(updatedtrainer!=null)
+        {
+        updatedtrainer.noOfstudents = updatedtrainer.noOfstudents-1
+        await updatedtrainer.save()
+        }
+    }
+    members.password = hashedpassword
+    members.heightincm = heightCM
+    members.weightinkg = weightKG
+    members.trainer = trainer
+    members.trainerusername = usernames
+    await members.save().then(()=>{
+            return res.status(200).json({message:"updated successfully"})
+    }).catch((error)=>{
+            return res.status(400).json({message:error.message})
+    })
+}
+module.exports = {addmember,getmemberdetails,deleteMember,getmemberbyID,getmemberbyID,updatemember}

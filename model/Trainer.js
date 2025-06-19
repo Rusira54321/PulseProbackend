@@ -2,6 +2,7 @@ const mongoose = require("mongoose")
 const trainerSchema = mongoose.Schema({
     name:{
         type:String,
+        unique:true,
         required:true
     },
     username:{
