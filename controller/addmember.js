@@ -64,4 +64,12 @@ const deleteMember = async(req,res) =>{
         return res.status(200).json({message:"member is deleted"})
     }
 }
-module.exports = {addmember,getmemberdetails,deleteMember}
+const getmemberbyID = async(req,res) =>{
+    const {id} = req.body
+    const matchMember = await member.findById(id)
+    if(matchMember)
+    {
+        return res.status(200).json({member:matchMember})
+    }
+}
+module.exports = {addmember,getmemberdetails,deleteMember,getmemberbyID,getmemberbyID}

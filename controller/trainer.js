@@ -105,4 +105,27 @@ const gettrainername = async(req,res) =>{
     const trainername = trainerdetails.name
     res.status(200).json({name:trainername})
 }
-module.exports = {addtrainer,authtrainer,gettrainers,deleteTrainer,gettrainername}
+const getTrainerbyID = async(req,res) =>{
+    const {id} = req.body
+    const matchTrainer = await trainer.findById(id)
+    if(matchTrainer)
+    {
+        return res.status(200).json({Trainer:matchTrainer})
+    }
+}
+const updateTrainer = async(req,res) =>{
+    const {password,email,phone,id} = req.body
+    if(!password || !email || !phone)
+    {
+        return res.status(400).json({message:"Missing fields"})
+    }
+    const hashedpassword = await bcrypt.hash(password,10)
+    const matchtrainer = await trainer.findById(id)
+    matchtrainer.password = hashedpassword
+    matchtrainer.email = email
+    matchtrainer.phone = phone
+    await matchtrainer.save().then(()=>{
+        return res.status(200).json({message:"Update successfully"})
+    })
+}
+module.exports = {addtrainer,authtrainer,gettrainers,deleteTrainer,gettrainername,getTrainerbyID,updateTrainer}
