@@ -9,18 +9,20 @@ const getSchedule = async (req, res) => {
 
   const prompt = `
 Create a personalized 1-week gym workout schedule in pure JSON format.
-Do not include any explanation or text — only output a JSON object.
+Do not include any explanation or text — only output a JSON object.do not include any user information.
 User: ${name}
 Height:${height}
 Wight:${weight}
 Goal: ${goal}
 Level: ${level}
-Available days: ${daysAvailable.join(", ")}
+Available days: ${daysAvailable}
 
 Format:
 {
-  "Monday": "Workout",
-  "Tuesday": "Workout",
+  "Monday": {
+    "Title": "...",
+    "exercises": [ ... ]
+  },
   ...
 }
 `;
