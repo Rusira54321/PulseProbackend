@@ -39,4 +39,15 @@ const addAttendance = async(req,res) =>{
         return res.status(201).json({message:"Attendance successfully added"})
     })
 }
-module.exports = {addAttendance}
+const getAttendance = async(req,res) =>{
+    const {day} = req.body
+    const attendeces = await attendanceModel.find({date:day})
+    if(attendeces.length ==0)
+    {
+        return res.status(400).json({message:"No attendences"})
+    }
+    else{
+        return res.status(200).json({Attendance:attendeces})
+    }
+}
+module.exports = {addAttendance,getAttendance}
