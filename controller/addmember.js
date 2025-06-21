@@ -34,6 +34,10 @@ const getmemberdetails = async(req,res) =>{
         const {key} = req.body;
         const members  = await member.find()
         var i
+        if(members.length==0)
+        {
+            return res.status(400).json({member:"empty members"})
+        }
         var newmember = []
         for (i=0;i<members.length;i++)
         {
@@ -113,4 +117,39 @@ const updatemember = async(req,res) =>{
             return res.status(400).json({message:error.message})
     })
 }
-module.exports = {addmember,getmemberdetails,deleteMember,getmemberbyID,getmemberbyID,updatemember}
+const getmemberdetailss = async(req,res) =>{
+        const {key} = req.body;
+        const today = new Date();
+        const day = String(today.getDate()).padStart(2, '0');
+        const month = String(today.getMonth() + 1).padStart(2, '0'); // Months start from 0
+        const year = today.getFullYear();
+        const customFormat = `${day}-${month}-${year}`;
+        const members  = await member.find()
+        var i
+        if(members.length==0)
+        {
+            return res.status(400).json({member:"empty members"})
+        }
+        var newmember = []
+        for (i=0;i<members.length;i++)
+        {
+            if(members[i].gym==key)
+            {
+                newmember.push(members[i])
+            }
+        }
+        if(newmember.length==0)
+        {
+            return res.status(400).json({member:"empty members"})
+        }
+        for(i=0;i<newmember.length;i++)
+        {
+            if(newmember[i].attendancedate!=customFormat)
+            {
+                newmember[i].attendancedate = null
+                newmember[i].attendance = null
+            }
+        }
+        return res.status(200).json({member:newmember})
+}
+module.exports = {addmember,getmemberdetails,deleteMember,getmemberbyID,getmemberbyID,updatemember,getmemberdetailss}

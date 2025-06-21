@@ -40,6 +40,13 @@ const memberSchema  = mongoose.Schema({
     },trainerusername:{
         type:String,
         required:true
+    },attendance:{
+        type:String,
+        enum:[null,"Present","Absent","Sick","Leave"],
+        default:null
+    },attendancedate:{
+        type:String,
+        default:null
     }
 })
 module.exports = mongoose.model("member",memberSchema)
