@@ -133,4 +133,12 @@ const updateTrainer = async(req,res) =>{
         return res.status(200).json({message:"Update successfully"})
     })
 }
-module.exports = {addtrainer,authtrainer,gettrainers,deleteTrainer,gettrainername,getTrainerbyID,updateTrainer}
+const gettrainersbytrainer = async(req,res) =>{
+        const {key} = req.body
+        const trainers = await trainer.find({key:key})
+        if(trainers)
+        {
+            res.status(200).json({trainers:trainers})
+        }
+}
+module.exports = {addtrainer,authtrainer,gettrainers,deleteTrainer,gettrainername,getTrainerbyID,updateTrainer,gettrainersbytrainer}

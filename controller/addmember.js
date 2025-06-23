@@ -152,4 +152,15 @@ const getmemberdetailss = async(req,res) =>{
         }
         return res.status(200).json({member:newmember})
 }
-module.exports = {addmember,getmemberdetails,deleteMember,getmemberbyID,getmemberbyID,updatemember,getmemberdetailss}
+const getmemberDetailBytrainer = async(req,res) =>{
+    const {username} = req.body
+    const members = await member.find({trainerusername:username})
+    if(members.length==0)
+    {
+        return res.status(400).json({message:"No members"})
+    }
+    else{
+        return res.status(200).json({members:members})
+    }
+}
+module.exports = {addmember,getmemberdetails,deleteMember,getmemberbyID,getmemberbyID,updatemember,getmemberdetailss,getmemberDetailBytrainer}
