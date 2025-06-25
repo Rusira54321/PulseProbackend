@@ -6,6 +6,7 @@ const workoutSchema = mongoose.Schema({
     },
     memberUsername:{
         type:String,
+        unique:true,
         required:true
     },
     planName:{

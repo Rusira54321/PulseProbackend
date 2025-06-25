@@ -7,7 +7,7 @@ const mealSchema = new mongoose.Schema({
 })
 
 const dietPlanSchema = new mongoose.Schema({
-  memberUsername: { type: String, required: true },
+  memberUsername: { type: String,unique:true,required:true },
   trainerUsername: { type: String, required: true },
   goal: { type: String, required: true },
   duration: { type: Number, required: true }, // in weeks
