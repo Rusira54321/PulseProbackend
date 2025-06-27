@@ -6,6 +6,7 @@ const addworkoutPlan = async(req,res) =>{
         return res.status(400).json({message:"Missing fields"})
     }
     else{
+        const date = Date.now() + duration *7 *24 *60*60*1000
         const existuser = await workout.findOne({memberUsername:memberUsername})
         if(existuser)
         {
@@ -17,7 +18,8 @@ const addworkoutPlan = async(req,res) =>{
             planName:planname,
             goal:goal,
             duration:duration,
-            workouts:workouts
+            workouts:workouts,
+            expiredAt:date
         })
         await newworkout.save().then(()=>{
             return res.status(201).json({message:"Workout created successfully"})
@@ -54,4 +56,27 @@ const getworkoutplanbyid = async(req,res)=>{
             return res.status(200).json({workout:workouts})
         }
 }
-module.exports = {addworkoutPlan,getworkoutplan,deleteworkoutplan,getworkoutplanbyid}
+const updateworkoutplan = async(req,res) =>{
+                const {id} = req.params
+                const {planName,goal,workouts} = req.body.workout
+                if(!planName || !goal || !workouts)
+                {
+                    return res.status(400).json({message:"Missing fields"})
+                }else{
+                     const updatedWorkout = await workout.findByIdAndUpdate(
+                                                    id,
+                                                        {
+                                                            planName,
+                                                            goal,
+                                                            workouts
+                                                        },
+                                                        { new: true }
+                                                        )
+                    if(updatedWorkout){
+                        return res.status(200).json({message:"Updated successfully"})
+                    }else{
+                        return res.status(400).json({message:"Not updated"})
+                    }
+                    }
+}
+module.exports = {addworkoutPlan,getworkoutplan,deleteworkoutplan,getworkoutplanbyid,updateworkoutplan}
