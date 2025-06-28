@@ -6,6 +6,7 @@ const addDietPlan = async(req,res) =>{
         return res.status(400).json({message:"Missing fields"})
     }
     else{
+        const expiredAt = Date.now() + duration * 7 *24 *60 *60 *1000
         const existuser = await DietPlan.findOne({memberUsername:memberUsername})
         if(existuser)
         {
@@ -16,7 +17,8 @@ const addDietPlan = async(req,res) =>{
                 trainerUsername:trainerUsername,
                 goal:goal,
                 duration:duration,
-                meals:meals
+                meals:meals,
+                expiredAt
         })
         await newdietplan.save().then(()=>{
             return res.status(201).json({message:"Diet plan is created successfully"})
@@ -46,4 +48,35 @@ const deleteDietPlan = async(req,res) =>{
             return res.status(400).json({message:"Failed to delete plan."})
         }
 }
-module.exports = {addDietPlan,getDietPlan,deleteDietPlan}
+const getDietplanbyid = async(req,res) =>{
+        const {id} = req.params
+        const dietplan = await DietPlan.findById(id)
+        if(dietplan)
+        {
+            return res.status(200).json({dietplan:dietplan})
+        }
+}
+const updateDietplan = async(req,res) =>{
+        const {goal,meals,id} = req.body
+        if(!goal || !meals)
+        {
+            return res.status(400).json({message:"Missing fields"})
+        }else{
+            const updateddietplan = await DietPlan.findByIdAndUpdate(
+                                                 id,
+                                                    {
+                                                        
+                                                        goal,
+                                                        meals
+                                                    },
+                                                    { new: true }
+                                            )
+            if(updateddietplan)
+            {
+                return res.status(200).json({message:"Update successfull"})
+            }else{
+                return res.status(400).json({message:"Update is unsuccessfull"})
+            }
+        }
+}
+module.exports = {addDietPlan,getDietPlan,deleteDietPlan,getDietplanbyid,updateDietplan}

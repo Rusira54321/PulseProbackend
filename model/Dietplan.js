@@ -12,7 +12,11 @@ const dietPlanSchema = new mongoose.Schema({
   goal: { type: String, required: true },
   duration: { type: Number, required: true }, // in weeks
   meals: [mealSchema],
-  createdAt: { type: Date, default: Date.now }
+  createdAt: { type: Date, default: Date.now },
+  expiredAt:{
+    type:Date,
+    default:null
+  }
 })
 
 module.exports =  mongoose.model('DietPlan', dietPlanSchema)
