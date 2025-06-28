@@ -1,5 +1,8 @@
 const express = require("express")
 const router = express.Router()
-const {addClass} = require("../controller/Class")
+const {addClass,getClasses,getmembersdata,deleteClass} = require("../controller/Class")
 router.post("/addclasses",addClass)
+router.post("/getclasses",getClasses)
+router.get("/getmembersdata/:id",getmembersdata)
+router.delete("/deleteclass/:id",deleteClass)
 module.exports = router

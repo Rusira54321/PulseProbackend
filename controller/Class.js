@@ -1,4 +1,5 @@
 const classes = require("../model/Class")
+const members = require("../model/member")
 const addClass = async (req, res) => {
   const { memberUsername, trainerusername, classname, date, newstartTime, newendTime, Description } = req.body;
   if (!memberUsername || !trainerusername || !classname || !date || !newstartTime || !newendTime || !Description) {
@@ -44,4 +45,38 @@ const addClass = async (req, res) => {
     return res.status(400).json({ message: "Class adding unsuccessful", error: error.message });
   }
 };
-module.exports = {addClass}
+const getClasses = async(req,res) =>{
+  const {trainerusername} = req.body
+  const classess = await classes.find({trainerusername})
+  if(classess)
+  {
+    return res.status(200).json({classes:classess})
+  }
+}
+const getmembersdata = async(req,res) =>{
+    const {id} = req.params
+    const matchclass = await classes.findById(id)
+    const membersss = []
+    if(matchclass)
+    {
+      const memberss = matchclass.memberUsername
+      for(const member of memberss)
+      {
+        const memberdata = await members.findOne({username:member})
+        if(memberdata)
+        {
+          membersss.push(memberdata)
+        }
+      }
+      return res.status(200).json({members:membersss})
+    }
+}
+const deleteClass = async(req,res) =>{
+  const {id} = req.params
+  await classes.findByIdAndDelete(id).then(()=>{
+    return res.status(200).json({message:"Class deleted successfully"})
+}).catch((error)=>{
+    return res.status(400).json({message:"Class deletion unsuccessful",error:error.message})
+})
+}
+module.exports = {addClass,getClasses,getmembersdata,deleteClass}
