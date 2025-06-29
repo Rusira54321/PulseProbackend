@@ -92,6 +92,19 @@ const updateSuppliment = async(req,res) =>{
             return res.status(400).json({message:error.message})
         })
 }
-module.exports = {addSuppliment,getSuppliments,deleteSupplement,getsupplimentbyId,updateSuppliment}
+const getsupplementsbyids = async(req,res) =>{
+    const {ids} = req.body
+    const supplements = []
+    for(id of ids)
+    {
+        const supplimentdata  =await suppliment.findById(id)
+        if(supplimentdata)
+        {
+            supplements.push(supplimentdata)
+        }
+    }
+    return res.status(200).json({supplements:supplements})
+}
+module.exports = {addSuppliment,getSuppliments,deleteSupplement,getsupplimentbyId,updateSuppliment,getsupplementsbyids}
 
 
