@@ -79,4 +79,12 @@ const deleteClass = async(req,res) =>{
     return res.status(400).json({message:"Class deletion unsuccessful",error:error.message})
 })
 }
-module.exports = {addClass,getClasses,getmembersdata,deleteClass}
+const getClassess = async(req,res) =>{
+  const {memberUsername} = req.body
+  const matchclass = await classes.find({memberUsername})
+  if(matchclass.length!=0)
+  {
+    return res.status(200).json({classesss:matchclass})
+  }
+}
+module.exports = {addClass,getClasses,getmembersdata,deleteClass,getClassess}

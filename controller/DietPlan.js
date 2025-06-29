@@ -79,4 +79,12 @@ const updateDietplan = async(req,res) =>{
             }
         }
 }
-module.exports = {addDietPlan,getDietPlan,deleteDietPlan,getDietplanbyid,updateDietplan}
+const getDietplanbymember = async(req,res) =>{
+    const {memberUsername} = req.body
+    const dietplan = await DietPlan.find({memberUsername:memberUsername})
+    if(dietplan.length!=0)
+    {
+        return res.status(200).json({dietplans:dietplan})
+    }
+}
+module.exports = {addDietPlan,getDietPlan,deleteDietPlan,getDietplanbyid,updateDietplan,getDietplanbymember}

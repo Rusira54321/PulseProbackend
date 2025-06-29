@@ -163,4 +163,28 @@ const getmemberDetailBytrainer = async(req,res) =>{
         return res.status(200).json({members:members})
     }
 }
-module.exports = {addmember,getmemberdetails,deleteMember,getmemberbyID,getmemberbyID,updatemember,getmemberdetailss,getmemberDetailBytrainer}
+const authmember = async(req,res)=>{
+    const {username,password} = req.body
+    if(!username || !password)
+    {
+        return res.status(400).json({message:"missing fields"})
+    }
+    else{
+        const existingmember = await member.findOne({username})
+        if(!existingmember)
+        {
+            return res.status(400).json({message:"You are not registered member please register"})
+        }else{
+            const matchpassword = await bcrypt.compare(password,existingmember.password)
+            if(!matchpassword)
+            {
+                return res.status(400).json({message:"Password is incorrect"})
+            }
+            if(matchpassword)
+            {
+                return res.status(200).json({message:"Verified successfully",member:existingmember})
+            }
+        }
+    }
+}
+module.exports = {addmember,getmemberdetails,deleteMember,getmemberbyID,getmemberbyID,updatemember,getmemberdetailss,getmemberDetailBytrainer,authmember}

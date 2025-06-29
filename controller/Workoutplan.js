@@ -79,4 +79,12 @@ const updateworkoutplan = async(req,res) =>{
                     }
                     }
 }
-module.exports = {addworkoutPlan,getworkoutplan,deleteworkoutplan,getworkoutplanbyid,updateworkoutplan}
+const getworkoutplanbymember = async(req,res) =>{
+        const {memberUsername} = req.body
+        const workouts = await workout.find({memberUsername:memberUsername})
+        if(workouts.length!=0)
+        {
+            return res.status(200).json({workouts:workouts})
+        }
+}
+module.exports = {addworkoutPlan,getworkoutplan,deleteworkoutplan,getworkoutplanbyid,updateworkoutplan,getworkoutplanbymember}
